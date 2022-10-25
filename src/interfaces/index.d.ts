@@ -9,4 +9,5 @@ export interface IPost {
   status: "published" | "draft" | "rejected";
   createdAt: string;
   category: { id: number };
+  content: string;
 }

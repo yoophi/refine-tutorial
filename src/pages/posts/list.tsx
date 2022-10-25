@@ -1,17 +1,19 @@
 import React from "react";
 import { useTable, ColumnDef, flexRender } from "@pankod/refine-react-table";
-import { useMany, GetManyResponse } from "@pankod/refine-core";
+import { useMany, GetManyResponse, useNavigation } from "@pankod/refine-core";
 
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronsLeftIcon,
   ChevronsRightIcon,
+  ShowIcon,
 } from "../../icons";
 
 import { ICategory, IPost } from "../../interfaces";
 
 export const PostList: React.FC = () => {
+  const { show } = useNavigation();
   const columns = React.useMemo<ColumnDef<IPost>[]>(
     () => [
       {
@@ -49,6 +51,21 @@ export const PostList: React.FC = () => {
             (item) => item.id === getValue()
           );
           return category?.title ?? "Loading...";
+        },
+      },
+      {
+        id: "action",
+        header: "Action",
+        accessorKey: "id",
+        cell: function render({ getValue }) {
+          return (
+            <button
+              className="rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-indigo-500 hover:text-white"
+              onClick={() => show("posts", getValue() as number)}
+            >
+              {ShowIcon}
+            </button>
+          );
         },
       },
     ],
