@@ -1,7 +1,8 @@
 import React from "react";
 import { useTable, ColumnDef, flexRender } from "@pankod/refine-react-table";
+import { useMany, GetManyResponse } from "@pankod/refine-core";
 
-import { IPost } from "../../interfaces";
+import { ICategory, IPost } from "../../interfaces";
 
 export const PostList: React.FC = () => {
   const columns = React.useMemo<ColumnDef<IPost>[]>(
@@ -26,13 +27,51 @@ export const PostList: React.FC = () => {
         header: "CreatedAt",
         accessorKey: "createdAt",
       },
+      {
+        id: "category.id",
+        header: "Category",
+        accessorKey: "category.id",
+        cell: function render({ getValue, table }) {
+          const meta = table.options.meta as {
+            categoriesData: GetManyResponse<ICategory>;
+          };
+          const category = meta.categoriesData?.data.find(
+            (item) => item.id === getValue()
+          );
+          return category?.title ?? "Loading...";
+        },
+      },
     ],
     []
   );
 
-  const { getHeaderGroups, getRowModel } = useTable<IPost>({
+  const {
+    getHeaderGroups,
+    getRowModel,
+    setOptions,
+    refineCore: {
+      tableQueryResult: { data: tableData },
+    },
+  } = useTable<IPost>({
     columns,
   });
+
+  const categoryIds = tableData?.data?.map((item) => item.category.id) ?? [];
+  const { data: categoriesData } = useMany<ICategory>({
+    resource: "categories",
+    ids: categoryIds,
+    queryOptions: {
+      enabled: categoryIds.length > 0,
+    },
+  });
+
+  setOptions((prev) => ({
+    ...prev,
+    meta: {
+      ...prev.meta,
+      categoriesData,
+    },
+  }));
 
   return (
     <div className="container mx-auto pb-4">
