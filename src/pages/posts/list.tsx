@@ -2,6 +2,13 @@ import React from "react";
 import { useTable, ColumnDef, flexRender } from "@pankod/refine-react-table";
 import { useMany, GetManyResponse } from "@pankod/refine-core";
 
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronsLeftIcon,
+  ChevronsRightIcon,
+} from "../../icons";
+
 import { ICategory, IPost } from "../../interfaces";
 
 export const PostList: React.FC = () => {
@@ -46,6 +53,14 @@ export const PostList: React.FC = () => {
   );
 
   const {
+    getState,
+    setPageIndex,
+    getCanPreviousPage,
+    getPageCount,
+    getCanNextPage,
+    nextPage,
+    previousPage,
+    setPageSize,
     getHeaderGroups,
     getRowModel,
     setOptions,
@@ -116,6 +131,69 @@ export const PostList: React.FC = () => {
           })}
         </tbody>
       </table>
+      <div className="mt-2 flex items-center justify-end gap-4">
+        <div className="flex gap-1">
+          <button
+            onClick={() => setPageIndex(0)}
+            disabled={!getCanPreviousPage()}
+            className="flex items-center justify-between gap-1 rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-indigo-500 hover:text-white disabled:bg-gray-200 hover:disabled:text-black"
+          >
+            {ChevronsLeftIcon}
+          </button>
+          <button
+            onClick={() => previousPage()}
+            disabled={!getCanPreviousPage()}
+            className="flex items-center justify-between gap-1 rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-indigo-500 hover:text-white disabled:bg-gray-200 hover:disabled:text-black"
+          >
+            {ChevronLeftIcon}
+          </button>
+          <button
+            onClick={() => nextPage()}
+            disabled={!getCanNextPage()}
+            className="flex items-center justify-between gap-1 rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-indigo-500 hover:text-white disabled:bg-gray-200 hover:disabled:text-black"
+          >
+            {ChevronRightIcon}
+          </button>
+          <button
+            onClick={() => setPageIndex(getPageCount() - 1)}
+            disabled={!getCanNextPage()}
+            className="flex items-center justify-between gap-1 rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-indigo-500 hover:text-white disabled:bg-gray-200 hover:disabled:text-black"
+          >
+            {ChevronsRightIcon}
+          </button>
+        </div>
+        <span>
+          Page
+          <strong>
+            {getState().pagination.pageIndex + 1} of {getPageCount()}
+          </strong>
+        </span>
+        <span>
+          Go to page:
+          <input
+            type="number"
+            defaultValue={getState().pagination.pageIndex + 1}
+            onChange={(e) => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0;
+              setPageIndex(page);
+            }}
+            className="w-12 rounded border border-gray-200 p-1 text-gray-700"
+          />
+        </span>
+        <select
+          value={getState().pagination.pageSize}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value));
+          }}
+          className="rounded border border-gray-200 p-1 text-gray-700"
+        >
+          {[10, 20, 30, 40, 50].map((pageSize) => (
+            <option key={pageSize} value={pageSize}>
+              Show {pageSize}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 };
