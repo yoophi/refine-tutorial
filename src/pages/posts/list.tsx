@@ -7,13 +7,14 @@ import {
   ChevronRightIcon,
   ChevronsLeftIcon,
   ChevronsRightIcon,
+  EditIcon,
   ShowIcon,
 } from "../../icons";
 
 import { ICategory, IPost } from "../../interfaces";
 
 export const PostList: React.FC = () => {
-  const { show } = useNavigation();
+  const { edit, show } = useNavigation();
   const columns = React.useMemo<ColumnDef<IPost>[]>(
     () => [
       {
@@ -59,12 +60,21 @@ export const PostList: React.FC = () => {
         accessorKey: "id",
         cell: function render({ getValue }) {
           return (
-            <button
-              className="rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-indigo-500 hover:text-white"
-              onClick={() => show("posts", getValue() as number)}
-            >
-              {ShowIcon}
-            </button>
+            <div className="flex gap-2">
+              <button
+                className="rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-indigo-500 hover:text-white"
+                onClick={() => edit("posts", getValue() as number)}
+              >
+                {EditIcon}
+              </button>
+
+              <button
+                className="rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-indigo-500 hover:text-white"
+                onClick={() => show("posts", getValue() as number)}
+              >
+                {ShowIcon}
+              </button>
+            </div>
           );
         },
       },
