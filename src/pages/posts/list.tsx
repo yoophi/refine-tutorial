@@ -7,6 +7,7 @@ import {
   ChevronRightIcon,
   ChevronsLeftIcon,
   ChevronsRightIcon,
+  CreateIcon,
   EditIcon,
   ShowIcon,
 } from "../../icons";
@@ -14,7 +15,7 @@ import {
 import { ICategory, IPost } from "../../interfaces";
 
 export const PostList: React.FC = () => {
-  const { edit, show } = useNavigation();
+  const { edit, show, create } = useNavigation();
   const columns = React.useMemo<ColumnDef<IPost>[]>(
     () => [
       {
@@ -137,6 +138,13 @@ export const PostList: React.FC = () => {
             onChange={(event) => titleColumn.setFilterValue(event.target.value)}
           />
         </div>
+        <button
+          className="flex items-center justify-between gap-1 rounded border border-gray-200 bg-indigo-500 p-2 text-xs font-medium leading-tight text-white transition duration-150 ease-in-out hover:bg-indigo-600"
+          onClick={() => create("posts")}
+        >
+          {CreateIcon}
+          <span>Create Post</span>
+        </button>
       </div>
       <table className="min-w-full table-fixed divide-y divide-gray-200 border">
         <thead className="bg-gray-100">
